@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { DrawerNavigator } from 'react-navigation';
+import { FontAwesome } from '@expo/vector-icons';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,48 +25,45 @@ function Home({ navigation } = this.props) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home VIEW</Text>
-      <TouchableOpacity style={[styles.btn]} onPress={() => navigation.navigate('Dashboard')}>
-        <Text style={styles.btnText}>To Dashboard</Text>
+      <TouchableOpacity style={[styles.btn]} onPress={() => { navigation.navigate('DrawerOpen'); }}>
+        <Text style={styles.btnText}>Open Drawer</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 
-function Dashboard() {
+function Dashboard({ navigation } = this.props) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Dashboard</Text>
-      <TouchableOpacity style={styles.btn} >
-        <Text style={styles.btnText}>To Dashboard</Text>
+      <TouchableOpacity style={styles.btn} onPress={() => { navigation.navigate('DrawerOpen'); }}>
+        <Text style={styles.btnText}>Open Drawer</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-const Stack = StackNavigator({
+const Drawer = DrawerNavigator({
   Home: {
     screen: Home,
-    navigation: {
-      title: 'Home',
+    navigationOptions: {
+      drawerLabel: 'Home',
+      drawerIcon: () => <FontAwesome name="home" size={20} color="black" />,
     },
   },
   Dashboard: {
     screen: Dashboard,
-    navigation: {
-      title: 'Dashboard',
-      headerTintColor: 'red',
-      headerStyle: {
-        backgroundColor: 'green',
-      },
-
+    navigationOptions: {
+      drawerLabel: 'Dashboard',
+      drawerIcon: () => <FontAwesome name="dashboard" size={20} color="black" />,
     },
   },
 });
 
 const App = () => (
-  <View style={styles.container}>
-    <Stack />
+  <View style={{ flex: 1 }}>
+    <Drawer />
   </View>
 );
 
