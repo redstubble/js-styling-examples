@@ -1,70 +1,42 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { DrawerNavigator } from 'react-navigation';
-import { FontAwesome } from '@expo/vector-icons';
+import { StyleSheet, View, Image, Animated } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff', // alignItems: 'center',
+    backgroundColor: '#fff',
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  text: {
-    fontSize: 22,
-  },
-  btn: {
-    backgroundColor: 'black',
-
-  },
-  btnText: {
-    color: 'green',
-  },
+  img: {
+    height: 200,
+    width: 200,
+  }
 });
 
-function Home({ navigation } = this.props) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Home VIEW</Text>
-      <TouchableOpacity style={[styles.btn]} onPress={() => { navigation.navigate('DrawerOpen'); }}>
-        <Text style={styles.btnText}>Open Drawer</Text>
-      </TouchableOpacity>
-    </View>
-  );
+export default class App extends React.Component {
+  state = {
+    opacity: new Animated.Value(0),
+    width: new Animated.Value(0),
+    height: new Animated.Value(0),
+  }
+  componentDidMount() {
+    const { opacity, width, height } = this.state;
+
+    Animated.timing(opacity, { toValue: 1, duration: 1000 }).start();
+    Animated.spring(width, { toValue: 300, speed: 5 }).start();
+    Animated.spring(height, { toValue: 300, speed: 5 }).start()
+  }
+  render() {
+    const { opacity, width, height } = this.state;
+    return (
+      <View style={styles.container}>
+        <Animated.Image
+          style={[styles.img, { opacity, height, width }]}
+          source={{ uri: 'https://tylermcginnis.com/tylermcginnis_glasses-300.png' }}
+        />
+      </View>
+    );
+  }
 }
 
-
-function Dashboard({ navigation } = this.props) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Dashboard</Text>
-      <TouchableOpacity style={styles.btn} onPress={() => { navigation.navigate('DrawerOpen'); }}>
-        <Text style={styles.btnText}>Open Drawer</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-const Drawer = DrawerNavigator({
-  Home: {
-    screen: Home,
-    navigationOptions: {
-      drawerLabel: 'Home',
-      drawerIcon: () => <FontAwesome name="home" size={20} color="black" />,
-    },
-  },
-  Dashboard: {
-    screen: Dashboard,
-    navigationOptions: {
-      drawerLabel: 'Dashboard',
-      drawerIcon: () => <FontAwesome name="dashboard" size={20} color="black" />,
-    },
-  },
-});
-
-const App = () => (
-  <View style={{ flex: 1 }}>
-    <Drawer />
-  </View>
-);
-
-export default App;
