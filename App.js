@@ -1,40 +1,57 @@
 import React from 'react';
-import { StyleSheet, View, Image, Animated } from 'react-native';
+import { StyleSheet, View, Text, ImageEditor, TouchableOpacity, Image } from 'react-native';
+import { ImagePicker } from 'expo';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   img: {
-    height: 200,
-    width: 200,
-  }
+    height: 150,
+    width: 150,
+    resizeMode: 'contain',
+    backgroundColor: 'black',
+  },
 });
 
 export default class App extends React.Component {
   state = {
-    opacity: new Animated.Value(0),
-    width: new Animated.Value(0),
-    height: new Animated.Value(0),
+    image: null,
   }
-  componentDidMount() {
-    const { opacity, width, height } = this.state;
 
-    Animated.timing(opacity, { toValue: 1, duration: 1000 }).start();
-    Animated.spring(width, { toValue: 300, speed: 5 }).start();
-    Animated.spring(height, { toValue: 300, speed: 5 }).start()
+  pickImage = () => {
+    ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [2, 1],
+    }).then((result) => {
+      if (result.cancelled) {
+        return;
+      }
+      ImageEditor.cropImage(
+        result.uri, {
+          offset: { x: 0, y: 0 },
+          size: { width: result.width, height: result.height },
+          displaySize: { width: 200, height: 100 },
+          resizeMode: 'contain',
+        }, uri => this.setState(() => ({ image: uri })),
+        () => console.log('Error'),
+      );
+    });
   }
+
   render() {
-    const { opacity, width, height } = this.state;
+    const { image } = this.state;
     return (
-      <View style={styles.container}>
-        <Animated.Image
-          style={[styles.img, { opacity, height, width }]}
-          source={{ uri: 'https://tylermcginnis.com/tylermcginnis_glasses-300.png' }}
-        />
+      <View style={styles.container} >
+        <TouchableOpacity onPress={this.pickImage}>
+          <Text>Open Camera Roll</Text>
+        </TouchableOpacity>
+
+        {image && (
+          <Image style={styles.img} source={{ uri: image }} />
+        )}
       </View>
     );
   }
