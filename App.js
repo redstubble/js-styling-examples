@@ -1,70 +1,108 @@
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { DrawerNavigator } from 'react-navigation';
-import { FontAwesome } from '@expo/vector-icons';
+
+import React, { Component } from 'react';
+import { Text, View, StyleSheet, SafeAreaView, Button, StatusBar, Platform } from 'react-native';
+import { StackNavigator, TabNavigator, DrawerNavigator } from 'react-navigation'; // 1.0.0-beta.27
+import Icon from 'react-native-vector-icons/Ionicons'; // 4.6.0
+
+const isAndroid = Platform.OS === 'android';
+
+const Screen1 = ({ navigation }) => (
+  <SafeAreaView style={[styles.container, { backgroundColor: '#6a51ae' }]}>
+    <StatusBar
+      barStyle="light-content"
+      backgroundColor="#6a51ae"
+    />
+    <Text style={[styles.paragraph, { color: '#fff' }]}>
+      Light Screen
+    </Text>
+    <Button
+      title="Next screen"
+      onPress={() => navigation.navigate('Screen2')}
+      color={isAndroid ? "blue" : "#fff"}
+    />
+    {/* <Button
+      title="Toggle Drawer"
+      onPress={() => navigation.navigate('DrawerToggle')}
+      color={isAndroid ? "blue" : "#fff"}
+    /> */}
+  </SafeAreaView>
+);
+
+const Screen2 = ({ navigation }) => (
+  <SafeAreaView style={[styles.container, { backgroundColor: '#ecf0f1' }]}>
+    <StatusBar
+      barStyle="dark-content"
+      backgroundColor="#ecf0f1"
+    />
+    <Text style={styles.paragraph}>
+      Dark Screen
+    </Text>
+    <Button
+      title="Next screen"
+      onPress={() => navigation.navigate('Screen1')}
+    />
+    {/* <Button
+      title="Toggle Drawer"
+      onPress={() => navigation.navigate('DrawerToggle')}
+    /> */}
+  </SafeAreaView>
+);
+
+// export default StackNavigator({
+//   Screen1: {
+//     screen: Screen1,
+//   },
+//   Screen2: {
+//     screen: Screen2,
+//   },
+// }, {
+//   headerMode: 'none',
+// });
+
+export default DrawerNavigator({
+  Screen1: {
+    screen: Screen1,
+  },
+  Screen2: {
+    screen: Screen2,
+  },
+});
+
+// export default TabNavigator({
+//   Screen1: {
+//     screen: Screen1,
+//     navigationOptions: {
+//       tabBarOnPress: ({ previousScene, scene, jumpToIndex }) => {
+//         // TODO: This doesn't handle the initial render because the second screen renders last. What to do?
+//         StatusBar.setBarStyle('light-content');
+//         isAndroid && StatusBar.setBackgroundColor('#6a51ae');
+//         jumpToIndex(scene.index);
+//       },
+//     },
+//   },
+//   Screen2: {
+//     screen: Screen2,
+//     navigationOptions: {
+//       tabBarOnPress: ({ previousScene, scene, jumpToIndex }) => {
+//         StatusBar.setBarStyle('dark-content');
+//         isAndroid && StatusBar.setBackgroundColor('#ecf0f1');
+//         jumpToIndex(scene.index);
+//       },
+//     },
+//   },
+// });
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff', // alignItems: 'center',
+    backgroundColor: '#ecf0f1',
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  text: {
-    fontSize: 22,
-  },
-  btn: {
-    backgroundColor: 'black',
-
-  },
-  btnText: {
-    color: 'green',
+  paragraph: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#34495e',
   },
 });
-
-function Home({ navigation } = this.props) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Home VIEW</Text>
-      <TouchableOpacity style={[styles.btn]} onPress={() => { navigation.navigate('DrawerOpen'); }}>
-        <Text style={styles.btnText}>Open Drawer</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-
-function Dashboard({ navigation } = this.props) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Dashboard</Text>
-      <TouchableOpacity style={styles.btn} onPress={() => { navigation.navigate('DrawerOpen'); }}>
-        <Text style={styles.btnText}>Open Drawer</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-const Drawer = DrawerNavigator({
-  Home: {
-    screen: Home,
-    navigationOptions: {
-      drawerLabel: 'Home',
-      drawerIcon: () => <FontAwesome name="home" size={20} color="black" />,
-    },
-  },
-  Dashboard: {
-    screen: Dashboard,
-    navigationOptions: {
-      drawerLabel: 'Dashboard',
-      drawerIcon: () => <FontAwesome name="dashboard" size={20} color="black" />,
-    },
-  },
-});
-
-const App = () => (
-  <View style={{ flex: 1 }}>
-    <Drawer />
-  </View>
-);
-
-export default App;
